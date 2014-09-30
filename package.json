@@ -1,0 +1,20 @@
+{
+  "name": "vz.yielded",
+  "version": "0.0.0",
+  "description": "Object to be used as a return value for functions that may execute an asynchronous method",
+  "main": "main.js",
+  "dependencies": {
+    "vz.property": "",
+    "vz.machine": "",
+    "vz.constants": ""
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/manvalls/vz.yielded.git"
+  },
+  "bugs": {
+    "url": "https://github.com/manvalls/vz.yielded/issues"
+  },
+  "author": "Manuel Valls Fernández <manolo@chatiku.com>",
+  "license": "LGPL-3.0"
+}
