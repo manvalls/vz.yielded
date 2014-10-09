@@ -10,6 +10,8 @@ var Machine = require('vz.machine'),
 Yielded = module.exports = function(){
   Machine.call(this);
   resolved.set(this,false);
+  
+  if(arguments.length == 1) this.value = arguments[0];
 };
 
 Yielded.prototype = new Machine(true);
