@@ -58,7 +58,7 @@ Object.defineProperties(Yielded.prototype,{
       if(this.done) return;
       resolved.set(this,true);
       value.set(this,v);
-      this.fire('done').resolve();
+      this.fire('done');
     }
   },
   error: {
@@ -69,7 +69,7 @@ Object.defineProperties(Yielded.prototype,{
       if(this.done) return;
       resolved.set(this,true);
       error.set(this,e);
-      this.fire('done').resolve();
+      this.fire('done');
     }
   },
   done: {
