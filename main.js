@@ -46,6 +46,8 @@ Yielded.get = function(yd){
   return new Yielded(yd);
 }
 
+Yielded.debug = false;
+
 Yielded.prototype = new Machine(true);
 Yielded.prototype.constructor = Yielded;
 
@@ -67,6 +69,7 @@ Object.defineProperties(Yielded.prototype,{
     },
     set: function(e){
       if(this.done) return;
+      if(Yielded.debug) console.error(e.stack?e.stack:e);
       resolved.set(this,true);
       error.set(this,e);
       this.fire('done');
