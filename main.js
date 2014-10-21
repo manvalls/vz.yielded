@@ -1,7 +1,6 @@
 
 var Machine = require('vz.machine'),
     Property = require('vz.property'),
-    constants = require('vz.constants'),
     Promise = global.Promise,
     resolved = new Property(),
     error = new Property(),
@@ -79,7 +78,10 @@ Object.defineProperties(Yielded.prototype,{
     get: function(){
       return resolved.get(this);
     },
-    set: constants.NOOP
+    set: function(data){
+      if(!data) return;
+      resolved.set(this,true);
+    }
   },
   
   isYielded: {

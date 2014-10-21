@@ -5,8 +5,7 @@
   "main": "main.js",
   "dependencies": {
     "vz.property": "",
-    "vz.machine": "",
-    "vz.constants": ""
+    "vz.machine": ""
   },
   "repository": {
     "type": "git",
