@@ -2,14 +2,18 @@
 var Machine = require('vz.machine'),
     Property = require('vz.property'),
     Promise = global.Promise,
+    
+    consumed = new Property(),
     resolved = new Property(),
     error = new Property(),
     value = new Property(),
+    
     Yielded;
 
 Yielded = module.exports = function(){
   Machine.call(this);
   resolved.set(this,false);
+  consumed.set(this,false);
   
   if(arguments.length == 1){
     if(arguments[0] instanceof Error) this.error = arguments[0];
@@ -81,6 +85,17 @@ Object.defineProperties(Yielded.prototype,{
     set: function(data){
       if(!data) return;
       resolved.set(this,true);
+    }
+  },
+  consumed: {
+    get: function(){
+      return consumed.get(this);
+    },
+    set: function(value){
+      if(!value) return;
+      if(!this.done) throw new Error('You can\'t consume a yielded not yet done');
+      consumed.set(this,true);
+      this.fire('consumed');
     }
   },
   
