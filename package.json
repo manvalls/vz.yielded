@@ -1,6 +1,6 @@
 {
   "name": "vz.yielded",
-  "version": "0.6.0",
+  "version": "0.7.0",
   "description": "Object to be used as a return value for functions that may execute an asynchronous method",
   "main": "main.js",
   "dependencies": {
