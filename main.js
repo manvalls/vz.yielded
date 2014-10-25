@@ -63,7 +63,7 @@ Object.defineProperties(Yielded.prototype,{
       if(this.done) return;
       resolved.set(this,true);
       value.set(this,v);
-      this.fire('done');
+      this.fire('done').resolve();
     }
   },
   error: {
@@ -75,7 +75,7 @@ Object.defineProperties(Yielded.prototype,{
       if(Yielded.debug) console.error(e.stack?e.stack:e);
       resolved.set(this,true);
       error.set(this,e);
-      this.fire('done');
+      this.fire('done').resolve();
     }
   },
   done: {
@@ -95,7 +95,7 @@ Object.defineProperties(Yielded.prototype,{
       if(!value) return;
       if(!this.done) throw new Error('You can\'t consume a yielded not yet done');
       consumed.set(this,true);
-      this.fire('consumed');
+      this.fire('consumed').resolve();
     }
   },
   
