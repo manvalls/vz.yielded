@@ -4,7 +4,7 @@
   "description": "Object to be used as a return value for functions that may execute an asynchronous method",
   "main": "main.js",
   "dependencies": {
-    "vz.property": "",
+    "vz.rand": "",
     "vz.machine": ""
   },
   "repository": {

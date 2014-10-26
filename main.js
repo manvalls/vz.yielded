@@ -1,19 +1,19 @@
 
 var Machine = require('vz.machine'),
-    Property = require('vz.property'),
+    Su = require('vz.rand').Su,
     Promise = global.Promise,
     
-    consumed = new Property(),
-    resolved = new Property(),
-    error = new Property(),
-    value = new Property(),
+    consumed = Su(),
+    resolved = Su(),
+    error = Su(),
+    value = Su(),
     
     Yielded;
 
 Yielded = module.exports = function(){
   Machine.call(this);
-  resolved.set(this,false);
-  consumed.set(this,false);
+  this[resolved] = false;
+  this[consumed] = false;
   
   if(arguments.length == 1){
     if(arguments[0] instanceof Error) this.error = arguments[0];
@@ -57,44 +57,47 @@ Yielded.prototype.constructor = Yielded;
 Object.defineProperties(Yielded.prototype,{
   value: {
     get: function(){
-      return value.get(this);
+      return this[value];
     },
     set: function(v){
       if(this.done) return;
-      resolved.set(this,true);
-      value.set(this,v);
+      
+      this[resolved] = true;
+      this[value] = v;
+      
       this.fire('done').resolve();
     }
   },
   error: {
     get: function(){
-      return error.get(this);
+      return this[error];
     },
     set: function(e){
       if(this.done) return;
       if(Yielded.debug) console.error(e.stack?e.stack:e);
-      resolved.set(this,true);
-      error.set(this,e);
+      
+      this[resolved] = true;
+      this[error] = e;
+      
       this.fire('done').resolve();
     }
   },
   done: {
     get: function(){
-      return resolved.get(this);
+      return this[resolved];
     },
     set: function(data){
-      if(!data) return;
-      resolved.set(this,true);
+      if(data === true) this[resolved] = true;
     }
   },
   consumed: {
     get: function(){
-      return consumed.get(this);
+      return this[consumed];
     },
     set: function(value){
       if(!value) return;
       if(!this.done) throw new Error('You can\'t consume a yielded not yet done');
-      consumed.set(this,true);
+      this[consumed] = true;
       this.fire('consumed').resolve();
     }
   },
