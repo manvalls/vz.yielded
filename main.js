@@ -1,5 +1,5 @@
 
-var Machine = require('vz.machine'),
+var Vse = require('vse'),
     Su = require('vz.rand').Su,
     Promise = global.Promise,
     
@@ -11,7 +11,7 @@ var Machine = require('vz.machine'),
     Yielded;
 
 Yielded = module.exports = function(){
-  Machine.call(this);
+  Vse.call(this);
   this[resolved] = false;
   this[consumed] = false;
   
@@ -51,7 +51,7 @@ Yielded.get = function(yd){
 
 Yielded.debug = false;
 
-Yielded.prototype = new Machine(true);
+Yielded.prototype = new Vse();
 Yielded.prototype.constructor = Yielded;
 
 Object.defineProperties(Yielded.prototype,{
@@ -65,7 +65,7 @@ Object.defineProperties(Yielded.prototype,{
       this[resolved] = true;
       this[value] = v;
       
-      this.fire('done').resolve();
+      this.fire('done');
     }
   },
   error: {
@@ -79,7 +79,7 @@ Object.defineProperties(Yielded.prototype,{
       this[resolved] = true;
       this[error] = e;
       
-      this.fire('done').resolve();
+      this.fire('done');
     }
   },
   done: {
@@ -98,7 +98,7 @@ Object.defineProperties(Yielded.prototype,{
       if(!value) return;
       if(!this.done) throw new Error('You can\'t consume a yielded not yet done');
       this[consumed] = true;
-      this.fire('consumed').resolve();
+      this.fire('consumed');
     }
   },
   

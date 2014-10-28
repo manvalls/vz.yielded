@@ -5,7 +5,7 @@
   "main": "main.js",
   "dependencies": {
     "vz.rand": "",
-    "vz.machine": ""
+    "vse": ""
   },
   "repository": {
     "type": "git",
