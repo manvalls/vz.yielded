@@ -87,7 +87,10 @@ Object.defineProperties(Yielded.prototype,{
       return this[resolved];
     },
     set: function(data){
-      if(data === true) this[resolved] = true;
+      if(data === true && !this.done){
+        this[resolved] = true;
+        this.fire('done');
+      }
     }
   },
   consumed: {
