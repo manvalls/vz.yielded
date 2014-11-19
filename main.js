@@ -49,7 +49,8 @@ Yielded.get = function(yd){
   return new Yielded(yd);
 }
 
-Yielded.debug = false;
+if(global.process) Yielded.debug = 'yddb' in process.env;
+else Yielded.debug = false;
 
 Yielded.prototype = new Vse();
 Yielded.prototype.constructor = Yielded;
