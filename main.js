@@ -8,9 +8,15 @@ var Vse = require('vse'),
     error = Su(),
     value = Su(),
     
+    index = Su(),
+    awaiting = Su(),
+    yieldeds = Su(),
+    yielded = Su(),
+    result = Su(),
+    
     Yielded;
 
-Yielded = module.exports = function(){
+Yielded = module.exports = function Yielded(){
   Vse.call(this);
   this[resolved] = false;
   this[consumed] = false;
@@ -21,11 +27,51 @@ Yielded = module.exports = function(){
   }
 };
 
+function onDone(){
+  if(this.error) this[yielded].error = this.error;
+  else this[yielded][result][this[index]] = this.value;
+  
+  if(--this[yielded][awaiting] <= 0) this[yielded].value = this[yielded][result];
+}
+
+function onConsumed(){
+  var i;
+  
+  for(i = 0;i < this[yieldeds].length;i++) this[yieldeds][i].consumed = true;
+}
+
 Yielded.get = function(yd){
-  var p;
+  var p,i;
   
   if(!yd) return new Yielded(yd);
   if(yd.isYielded) return yd;
+  
+  if(yd.constructor == Array){
+    p = yd;
+    
+    yd = new Yielded();
+    yd[awaiting] = 0;
+    yd[yieldeds] = p;
+    yd[result] = [];
+    
+    for(i = 0;i < p.length;i++){
+      p[i] = Yielded.get(p[i]);
+      p[i][yielded] = yd;
+      p[i][index] = i;
+      
+      if(p[i].done){
+        if(p[i].error) yd.error = p[i].error;
+        else yd[result][i] = p[i].value;
+      }else{
+        yd[awaiting]++;
+        p[i].on('done',onDone);
+      }
+    }
+    
+    if(!yd[awaiting]) yd.value = yd[result];
+    
+    return yd;
+  }
   
   if(typeof yd.then == 'function'){
     p = yd;
