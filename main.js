@@ -1,5 +1,5 @@
 
-var Vse = require('vse'),
+var Vse,
     Su = require('vz.rand').Su,
     Promise = global.Promise,
     
@@ -26,6 +26,10 @@ Yielded = module.exports = function Yielded(){
     else this.value = arguments[0];
   }
 };
+
+// Late import
+
+Vse = require('vse');
 
 function onDone(){
   if(this.error) this[yielded].error = this.error;
