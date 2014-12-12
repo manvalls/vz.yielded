@@ -99,7 +99,7 @@ Yielded.get = function(yd){
   return new Yielded(yd);
 }
 
-if(global.process) Yielded.debug = 'yddb' in process.env;
+if(global.process) Yielded.debug = process.env.yddb == '';
 else Yielded.debug = false;
 
 Yielded.prototype = new Vse();
