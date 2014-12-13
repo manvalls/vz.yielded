@@ -102,6 +102,18 @@ Yielded.get = function(yd){
 if(global.process) Yielded.debug = process.env.yddb == '';
 else Yielded.debug = false;
 
+Yielded.accept = function(value){
+  var ret = new Yielded();
+  ret.value = value;
+  return ret;
+};
+
+Yielded.reject = function(error){
+  var ret = new Yielded();
+  ret.error = error;
+  return ret;
+};
+
 Yielded.prototype = new Vse();
 Yielded.prototype.constructor = Yielded;
 
