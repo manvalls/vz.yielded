@@ -30,89 +30,6 @@ Yielded = module.exports = function Yielded(){
 
 Vse = require('vse');
 
-function onDone(){
-  if(this.error) this[yielded].error = this.error;
-  else this[yielded][result][this[index]] = this.value;
-  
-  if(--this[yielded][awaiting] <= 0) this[yielded].value = this[yielded][result];
-}
-
-function onConsumed(){
-  var i;
-  
-  for(i = 0;i < this[yieldeds].length;i++) this[yieldeds][i].consumed = true;
-}
-
-Yielded.get = function(yd){
-  var p,i;
-  
-  if(!yd) return new Yielded(yd);
-  if(yd.isYielded) return yd;
-  
-  if(yd.constructor == Array){
-    p = yd;
-    
-    yd = new Yielded();
-    yd[awaiting] = 0;
-    yd[yieldeds] = p;
-    yd[result] = [];
-    
-    for(i = 0;i < p.length;i++){
-      p[i] = Yielded.get(p[i]);
-      p[i][yielded] = yd;
-      p[i][index] = i;
-      
-      if(p[i].done){
-        if(p[i].error) yd.error = p[i].error;
-        else yd[result][i] = p[i].value;
-      }else{
-        yd[awaiting]++;
-        p[i].on('done',onDone);
-      }
-    }
-    
-    if(!yd[awaiting]) yd.value = yd[result];
-    
-    return yd;
-  }
-  
-  if(typeof yd.then == 'function'){
-    p = yd;
-    yd = new Yielded();
-    p.then(function(v){yd.value = v;},function(e){yd.error = e;});
-    return yd;
-  }
-  
-  if(typeof yd == 'function'){
-    p = yd;
-    yd = new Yielded();
-    
-    p(function(e,v){
-      if(e) yd.error = e;
-      else yd.value = v;
-    });
-    
-    return yd;
-  }
-  
-  return new Yielded(yd);
-}
-
-if(global.process) Yielded.debug = process.env.yddb == '';
-else Yielded.debug = false;
-
-Yielded.accept = function(value){
-  var ret = new Yielded();
-  ret.value = value;
-  return ret;
-};
-
-Yielded.reject = function(error){
-  var ret = new Yielded();
-  ret.error = error;
-  return ret;
-};
-
 Yielded.prototype = new Vse();
 Yielded.prototype.constructor = Yielded;
 
@@ -225,4 +142,89 @@ Object.defineProperties(Yielded.prototype,{
     });
   }}
 });
+
+// Extras
+
+function onDone(){
+  if(this.error) this[yielded].error = this.error;
+  else this[yielded][result][this[index]] = this.value;
+  
+  if(--this[yielded][awaiting] <= 0) this[yielded].value = this[yielded][result];
+}
+
+function onConsumed(){
+  var i;
+  
+  for(i = 0;i < this[yieldeds].length;i++) this[yieldeds][i].consumed = true;
+}
+
+Yielded.get = function(yd){
+  var p,i;
+  
+  if(!yd) return new Yielded(yd);
+  if(yd.isYielded) return yd;
+  
+  if(yd.constructor == Array){
+    p = yd;
+    
+    yd = new Yielded();
+    yd[awaiting] = 0;
+    yd[yieldeds] = p;
+    yd[result] = [];
+    
+    for(i = 0;i < p.length;i++){
+      p[i] = Yielded.get(p[i]);
+      p[i][yielded] = yd;
+      p[i][index] = i;
+      
+      if(p[i].done){
+        if(p[i].error) yd.error = p[i].error;
+        else yd[result][i] = p[i].value;
+      }else{
+        yd[awaiting]++;
+        p[i].on('done',onDone);
+      }
+    }
+    
+    if(!yd[awaiting]) yd.value = yd[result];
+    
+    return yd;
+  }
+  
+  if(typeof yd.then == 'function'){
+    p = yd;
+    yd = new Yielded();
+    p.then(function(v){yd.value = v;},function(e){yd.error = e;});
+    return yd;
+  }
+  
+  if(typeof yd == 'function'){
+    p = yd;
+    yd = new Yielded();
+    
+    p(function(e,v){
+      if(e) yd.error = e;
+      else yd.value = v;
+    });
+    
+    return yd;
+  }
+  
+  return new Yielded(yd);
+}
+
+if(global.process) Yielded.debug = process.env.yddb == '';
+else Yielded.debug = false;
+
+Yielded.accept = function(value){
+  var ret = new Yielded();
+  ret.value = value;
+  return ret;
+};
+
+Yielded.reject = function(error){
+  var ret = new Yielded();
+  ret.error = error;
+  return ret;
+};
 
