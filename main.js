@@ -1,4 +1,3 @@
-
 var Vse,
     Su = require('vz.rand').Su,
     Promise = global.Promise,
@@ -117,6 +116,15 @@ Yielded.reject = function(error){
 Yielded.prototype = new Vse();
 Yielded.prototype.constructor = Yielded;
 
+function mimic(e,that){
+  if(this.error) that.error = this.error;
+  else that.value = this.value;
+}
+
+function consume(e,that){
+  that.consumed = true;
+}
+
 Object.defineProperties(Yielded.prototype,{
   value: {
     get: function(){
@@ -167,6 +175,17 @@ Object.defineProperties(Yielded.prototype,{
       this.fire('consumed');
     }
   },
+  
+  mimic: {value: function(yd){
+    yd = Yielded.get(yd);
+    
+    if(yd.done){
+      if(yd.error) this.error = yd.error;
+      else this.value = yd.value;
+    }else yd.on('done',mimic,this);
+    
+    this.on('consumed',consume,yd);
+  }},
   
   isYielded: {
     value: true
